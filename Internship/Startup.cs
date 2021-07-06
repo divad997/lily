@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Internship.Configuration;
 using Internship.Core;
 using Internship.Models;
 using Internship.Service;
@@ -46,7 +47,13 @@ namespace Internship
 									.AllowAnyHeader();
 						}));
 
+            var config = new ProjectConfiguration();
+			Configuration.Bind("ProjectConfiguration", config);
+			services.AddSingleton(config);
+
             services.AddScoped<IUserService,UserService>();
+
+            services.AddIdentityServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +68,6 @@ namespace Internship
 						ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 					});
 
-			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseCors("MyPolicy");
@@ -72,6 +78,8 @@ namespace Internship
             {
                 endpoints.MapControllers();
             });
+
+            app.UseIdentityServer();
         }
     }
 }
