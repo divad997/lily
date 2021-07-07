@@ -17,5 +17,10 @@ namespace Internship.Repositories
 		{
 			return context.Users.Where(x => x.Id == id).FirstOrDefault();
 		}
+
+        public User GetUserByEmailAndPass(string email, string password)
+        {
+			return context.Users.Where(x => (x.Email == email && x.Password == password)).FirstOrDefault();
+        }
     }
 }

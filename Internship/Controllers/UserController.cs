@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Internship.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
 	[ApiController]
 	public class UserController : ControllerBase 
 	{
@@ -17,16 +17,28 @@ namespace Internship.Controllers
 		{
             _userService = userService;
 		}
-
-
-		//POST /user
 		
-		[HttpPost]  
-		public ActionResult<User> Register(User user)
+		//POST /users
+		[HttpPost] 
+		public async Task<IActionResult> CreateUser(User user)
 		{
-			User newUser = _userService.Add(user);
 
-			return Ok(user);
+			User newUser = _userService.GetUserWithEmailAndPass(user.Email,user.Password);
+			if(user != null)
+			{
+				return BadRequest("User exists");
+			}
+
+			Boolean success = _userService.CreateUserAndSendToken(newUser);
+
+			if(success)
+			{
+				return Ok(newUser);
+			}
+			else
+			{
+				return BadRequest("Something went wrong");
+			}
 		}
 
 		[HttpGet("{id}")] //R

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Internship.Core;
 using Internship.Models;
 using Internship.Repositories;
-using Microsoft.Extensions.Options;
 
 namespace Internship.Service
 {
@@ -50,7 +49,44 @@ namespace Internship.Service
 				throw new Exception(e.Message);
 			}
 		}
-		
+
+		public User GetUserWithEmailAndPass(string email, string password)
+		{
+			try
+			{
+				using(var unitOfWork = new UnitOfWork(new Context()))
+				{
+					return unitOfWork.Users.GetUserByEmailAndPass(email, password);
+				}
+			}
+			catch (Exception e)
+			{
+				throw new Exception(e.Message);
+			}
+		}
+
+		public Boolean CreateUserAndSendToken(User user)
+		{
+			if(user == null)
+			{
+				return false;
+			}
+			try
+			{
+				using(var unitOfWork = new UnitOfWork(new Context()))
+				{
+
+					unitOfWork.Users.Add(user);
+					unitOfWork.Complete();
+				}
+			}
+			catch(Exception e)
+			{
+				throw new Exception(e.Message);
+			}
+			return true;
+		}
+
 		public IEnumerable<User> GetAll()
 		{
 			try

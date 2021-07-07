@@ -8,6 +8,8 @@ namespace Internship.Core
     {
         User Add(User user);        
         User GetUserById(Guid id);
+        User GetUserWithEmailAndPass(string email, string password);
+        Boolean CreateUserAndSendToken(User user);
         IEnumerable<User> GetAll();
         void Remove(User user);
     }

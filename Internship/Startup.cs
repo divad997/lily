@@ -23,7 +23,7 @@ namespace Internship
         
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration;;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -34,6 +34,8 @@ namespace Internship
             {
                 options.AutomaticAuthentication = false;
             });
+
+            services.AddMvc();
 
             services.AddDbContext<Context>(x => {
 					x.UseSqlServer(Configuration["ProjectConfiguration:DatabaseConfiguration:ConnectionString"]);
@@ -53,7 +55,10 @@ namespace Internship
 
             services.AddScoped<IUserService,UserService>();
 
-            services.AddIdentityServer();
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddInMemoryApiResources(IdentityConfiguration.GetApiResources())
+                .AddInMemoryClients(IdentityConfiguration.GetClients());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
